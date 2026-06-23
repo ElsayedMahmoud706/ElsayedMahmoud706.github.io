@@ -6,10 +6,10 @@
     <meta name="description" content="Capolavoro Maturità - Progettazione e Messa in Sicurezza di una Rete LAN. Sviluppato da Elsayed Mahmoud.">
     <meta name="author" content="Elsayed Mahmoud">
     <title>Capolavoro Sistemi e Reti | Elsayed Mahmoud 5 B-Inf</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         /* ==========================================================================
@@ -17,29 +17,50 @@
            ========================================================================== */
         :root {
             /* Palette Colori Aziendale / Tecnica */
-            --primary: #0f172a;        /* Blu scuro notte */
+            --primary: #0f172a;
             --primary-light: #1e293b;
-            --secondary: #3b82f6;      /* Blu acceso per accenti */
-            --accent: #10b981;         /* Verde smeraldo per successi/attivo */
-            --danger: #ef4444;         /* Rosso per blocchi/deny */
-            --warning: #f59e0b;        /* Giallo per alert WPS */
-            
+            --secondary: #3b82f6;
+            --secondary-dim: #2563eb;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+
             /* Sfondo e Testi */
             --bg-body: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #334155;
             --text-muted: #64748b;
             --text-light: #f8fafc;
-            
+
             /* Bordi e Ombre */
             --border-color: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
-            
-            /* Tipografia */
+
+            /* OSI Layer Badge Colors */
+            --osi-l2: #8b5cf6;
+            --osi-l3: #3b82f6;
+            --osi-l7: #10b981;
+
             --font-main: 'Inter', sans-serif;
             --font-code: 'Fira Code', monospace;
+
+            --radius: 12px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0b1120;
+            --bg-card: #131c2e;
+            --text-main: #cbd5e1;
+            --text-muted: #8492a6;
+            --border-color: #233047;
+            --primary: #f8fafc;
+            --primary-light: #1e293b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+            --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.5);
         }
 
         *, *::before, *::after {
@@ -50,7 +71,17 @@
 
         html {
             scroll-behavior: smooth;
-            scroll-padding-top: 100px; /* Offset per la navbar fissa */
+            scroll-padding-top: 100px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         body {
@@ -60,6 +91,65 @@
             line-height: 1.7;
             font-size: 16px;
             -webkit-font-smoothing: antialiased;
+            transition: background-color var(--transition), color var(--transition);
+        }
+
+        a { color: inherit; }
+
+        ::selection {
+            background: var(--secondary);
+            color: white;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--secondary);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* ==========================================================================
+           PROGRESS BAR DI LETTURA
+           ========================================================================== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            z-index: 1000;
+            transition: width 0.1s ease-out;
+        }
+
+        /* ==========================================================================
+           TOGGLE TEMA
+           ========================================================================== */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--text-light);
+            border: 2px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            z-index: 999;
+            transition: transform var(--transition), background var(--transition);
+            font-size: 1.4rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
         }
 
         /* ==========================================================================
@@ -75,15 +165,37 @@
             border-bottom: 5px solid var(--secondary);
         }
 
-        /* Effetto di sfondo a rete neurale/nodi per il networking */
         header::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 20%),
                 radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.15) 0%, transparent 20%);
             z-index: 1;
+        }
+
+        /* Animazione nodi rete in background dell'header */
+        .network-nodes {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        .network-nodes circle {
+            fill: var(--secondary);
+            animation: pulse-node 3s ease-in-out infinite;
+        }
+
+        .network-nodes line {
+            stroke: rgba(59, 130, 246, 0.3);
+            stroke-width: 1;
+        }
+
+        @keyframes pulse-node {
+            0%, 100% { opacity: 0.4; r: 3; }
+            50% { opacity: 1; r: 4; }
         }
 
         .hero-content {
@@ -91,6 +203,12 @@
             z-index: 2;
             max-width: 900px;
             margin: 0 auto;
+            animation: fade-up 0.8s ease-out;
+        }
+
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         header h1 {
@@ -120,7 +238,7 @@
         }
 
         /* ==========================================================================
-           LAYOUT PRINCIPALE (CSS GRID)
+           LAYOUT PRINCIPALE
            ========================================================================== */
         .layout-wrapper {
             max-width: 1400px;
@@ -133,22 +251,23 @@
 
         @media (min-width: 1024px) {
             .layout-wrapper {
-                grid-template-columns: 320px 1fr; /* Sidebar a sinistra, contenuto a destra */
+                grid-template-columns: 320px 1fr;
             }
         }
 
         /* ==========================================================================
-           SIDEBAR (INDICE NAVIGABILE)
+           SIDEBAR
            ========================================================================== */
         aside.sidebar {
             position: sticky;
             top: 2rem;
             height: max-content;
             background: var(--bg-card);
-            border-radius: 12px;
+            border-radius: var(--radius);
             padding: 2rem;
             box-shadow: var(--shadow-lg);
             border: 1px solid var(--border-color);
+            transition: background-color var(--transition), border-color var(--transition);
         }
 
         .sidebar h3 {
@@ -166,7 +285,7 @@
         }
 
         .sidebar li {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.4rem;
         }
 
         .sidebar a {
@@ -176,14 +295,15 @@
             font-weight: 500;
             display: flex;
             align-items: center;
-            transition: all 0.3s ease;
+            transition: all var(--transition);
             padding: 0.5rem;
             border-radius: 6px;
+            position: relative;
         }
 
         .sidebar a:hover {
             color: var(--secondary);
-            background: #eff6ff;
+            background: rgba(59, 130, 246, 0.08);
             transform: translateX(5px);
         }
 
@@ -191,6 +311,41 @@
             content: '▹';
             margin-right: 10px;
             color: var(--secondary);
+            transition: transform var(--transition);
+        }
+
+        .sidebar a.active {
+            color: var(--secondary);
+            background: rgba(59, 130, 246, 0.1);
+            font-weight: 700;
+        }
+
+        .sidebar a.active::before {
+            transform: translateX(2px) scale(1.2);
+        }
+
+        .sidebar-progress {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .sidebar-progress-bar {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .sidebar-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            width: 0%;
+            transition: width 0.2s ease-out;
+            border-radius: 3px;
         }
 
         /* ==========================================================================
@@ -208,9 +363,19 @@
             padding: 3rem;
             box-shadow: var(--shadow-md);
             border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform var(--transition), box-shadow var(--transition), background-color var(--transition), border-color var(--transition);
             position: relative;
             overflow: hidden;
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        .chapter-card.is-visible {
+            animation: reveal 0.7s ease-out forwards;
+        }
+
+        @keyframes reveal {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .chapter-card:hover {
@@ -218,7 +383,10 @@
             transform: translateY(-2px);
         }
 
-        /* Linea colorata in alto per ogni capitolo */
+        .chapter-card.is-visible:hover {
+            transform: translateY(-2px);
+        }
+
         .chapter-card::before {
             content: '';
             position: absolute;
@@ -230,9 +398,17 @@
         .chapter-header {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
             margin-bottom: 2rem;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 1rem;
+        }
+
+        .chapter-header-left {
+            display: flex;
+            align-items: center;
         }
 
         .chapter-num {
@@ -248,6 +424,7 @@
             border-radius: 12px;
             margin-right: 1.5rem;
             box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
         }
 
         .chapter-title {
@@ -255,6 +432,23 @@
             color: var(--primary);
             font-weight: 700;
         }
+
+        /* Badge Livello OSI */
+        .osi-badge {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.35rem 0.8rem;
+            border-radius: 50px;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+            border: 1.5px solid currentColor;
+        }
+
+        .osi-badge.l2 { color: var(--osi-l2); background: rgba(139, 92, 246, 0.1); }
+        .osi-badge.l3 { color: var(--osi-l3); background: rgba(59, 130, 246, 0.1); }
+        .osi-badge.l7 { color: var(--osi-l7); background: rgba(16, 185, 129, 0.1); }
+        .osi-badge.multi { color: var(--text-muted); background: rgba(100, 116, 139, 0.1); }
 
         .chapter-content p {
             margin-bottom: 1.5rem;
@@ -271,10 +465,9 @@
         }
 
         /* ==========================================================================
-           COMPONENTI SPECIALI (BOX, TERMINALE, TAG)
+           COMPONENTI SPECIALI
            ========================================================================== */
-        
-        /* Box Informativo / Motivazione Tecnica */
+
         .info-box {
             background: #fffbeb;
             border-left: 5px solid var(--warning);
@@ -282,6 +475,10 @@
             border-radius: 0 8px 8px 0;
             margin: 2rem 0;
         }
+
+        [data-theme="dark"] .info-box { background: rgba(245, 158, 11, 0.08); }
+        [data-theme="dark"] .info-box.danger { background: rgba(239, 68, 68, 0.08); }
+        [data-theme="dark"] .info-box.success { background: rgba(16, 185, 129, 0.08); }
 
         .info-box.danger {
             background: #fef2f2;
@@ -305,11 +502,10 @@
             content: '💡';
             margin-right: 10px;
         }
-        
+
         .info-box.danger h4::before { content: '⚠️'; }
         .info-box.success h4::before { content: '✅'; }
 
-        /* Stile per il codice inline */
         code.inline {
             background: #f1f5f9;
             color: #b91c1c;
@@ -320,7 +516,13 @@
             border: 1px solid #e2e8f0;
         }
 
-        /* Finestra Terminale simulata */
+        [data-theme="dark"] code.inline {
+            background: #1e293b;
+            color: #fca5a5;
+            border-color: #334155;
+        }
+
+        /* Terminale */
         .terminal-window {
             background: #1e1e1e;
             border-radius: 8px;
@@ -335,6 +537,12 @@
             display: flex;
             gap: 8px;
             align-items: center;
+            justify-content: space-between;
+        }
+
+        .terminal-header-dots {
+            display: flex;
+            gap: 8px;
         }
 
         .term-dot {
@@ -346,6 +554,21 @@
         .term-dot.yellow { background: #ffbd2e; }
         .term-dot.green { background: #27c93f; }
 
+        .copy-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #d8dee9;
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+
+        .copy-btn:hover { background: rgba(255,255,255,0.18); }
+        .copy-btn.copied { color: #a3be8c; border-color: #a3be8c; }
+
         .terminal-body {
             padding: 1.5rem;
             color: #a3be8c;
@@ -354,13 +577,12 @@
             line-height: 1.5;
             overflow-x: auto;
         }
-        
+
         .terminal-body .cmd { color: #88c0d0; }
         .terminal-body .output { color: #d8dee9; }
 
-        /* Riquadro per gli Screenshot (Placeholder per Unica) */
         .screenshot-placeholder {
-            background: #f8fafc;
+            background: var(--bg-body);
             border: 2px dashed #cbd5e1;
             border-radius: 8px;
             padding: 3rem 1rem;
@@ -368,12 +590,134 @@
             margin: 2rem 0;
             color: #94a3b8;
             font-weight: 600;
+            transition: background-color var(--transition);
         }
-        
+
+        [data-theme="dark"] .screenshot-placeholder { border-color: #334155; }
+
         .screenshot-placeholder span {
             display: block;
             font-size: 2rem;
             margin-bottom: 10px;
+        }
+
+        /* ==========================================================================
+           DIAGRAMMA TOPOLOGIA DI RETE (SIGNATURE ELEMENT)
+           ========================================================================== */
+        .topology-diagram {
+            background: var(--primary);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        .topology-diagram svg {
+            width: 100%;
+            min-width: 600px;
+            height: auto;
+            display: block;
+        }
+
+        .topo-label {
+            font-family: var(--font-code);
+            font-size: 13px;
+            fill: #e2e8f0;
+        }
+
+        .topo-label-small {
+            font-family: var(--font-code);
+            font-size: 11px;
+            fill: #94a3b8;
+        }
+
+        .topo-node {
+            transition: filter 0.2s;
+        }
+
+        .topo-node:hover {
+            filter: brightness(1.3);
+        }
+
+        .topo-link {
+            stroke: #3b82f6;
+            stroke-width: 2;
+            stroke-dasharray: 6 4;
+            animation: dash-flow 2s linear infinite;
+        }
+
+        @keyframes dash-flow {
+            to { stroke-dashoffset: -20; }
+        }
+
+        /* ==========================================================================
+           TABELLA RIASSUNTIVA
+           ========================================================================== */
+        .summary-table-wrapper {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        table.summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        table.summary-table th {
+            background: var(--primary);
+            color: var(--text-light);
+            text-align: left;
+            padding: 1rem 1.2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table.summary-table td {
+            padding: 1rem 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table.summary-table tbody tr {
+            background: var(--bg-card);
+            transition: background var(--transition);
+        }
+
+        table.summary-table tbody tr:hover {
+            background: rgba(59, 130, 246, 0.06);
+        }
+
+        table.summary-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.25rem 0.7rem;
+            border-radius: 50px;
+        }
+
+        .status-pill.active {
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--accent);
+        }
+
+        .status-pill.disabled {
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--danger);
+        }
+
+        .status-pill::before {
+            content: '●';
+            font-size: 0.6rem;
         }
 
         /* ==========================================================================
@@ -387,10 +731,16 @@
         }
 
         .glossary-term {
-            background: #f8fafc;
+            background: var(--bg-body);
             padding: 1.5rem;
             border-radius: 8px;
             border: 1px solid var(--border-color);
+            transition: background-color var(--transition), border-color var(--transition), transform var(--transition);
+        }
+
+        .glossary-term:hover {
+            transform: translateY(-3px);
+            border-color: var(--secondary);
         }
 
         .glossary-term dt {
@@ -421,18 +771,83 @@
             font-size: 0.95rem;
         }
 
-        /* Responsive Design per Smartphone */
+        /* ==========================================================================
+           BACK TO TOP
+           ========================================================================== */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 5.5rem;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            z-index: 999;
+            font-size: 1.3rem;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: opacity var(--transition), transform var(--transition);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover { transform: translateY(-3px); }
+
+        /* ==========================================================================
+           RESPONSIVE
+           ========================================================================== */
         @media (max-width: 768px) {
             header { padding: 3rem 1rem; }
             header h1 { font-size: 2rem; }
             .chapter-card { padding: 1.5rem; }
             .chapter-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .back-to-top { right: 1.5rem; bottom: 6rem; width: 46px; height: 46px; }
+            .theme-toggle { right: 1.5rem; bottom: 1.5rem; width: 46px; height: 46px; }
+        }
+
+        /* ==========================================================================
+           PRINT STYLES
+           ========================================================================== */
+        @media print {
+            .theme-toggle, .back-to-top, .progress-bar, aside.sidebar { display: none !important; }
+            .layout-wrapper { grid-template-columns: 1fr !important; padding: 0; }
+            .chapter-card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; opacity: 1 !important; transform: none !important; }
+            header { background: var(--primary) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body { background: white; }
         }
     </style>
 </head>
 <body>
 
+    <div class="progress-bar" id="progressBar"></div>
+
     <header>
+        <svg class="network-nodes" viewBox="0 0 900 300" preserveAspectRatio="none" aria-hidden="true">
+            <line x1="120" y1="60" x2="300" y2="150"></line>
+            <line x1="300" y1="150" x2="500" y2="80"></line>
+            <line x1="300" y1="150" x2="480" y2="220"></line>
+            <line x1="500" y1="80" x2="700" y2="140"></line>
+            <line x1="480" y1="220" x2="700" y2="140"></line>
+            <line x1="700" y1="140" x2="830" y2="60"></line>
+            <circle cx="120" cy="60" r="3"></circle>
+            <circle cx="300" cy="150" r="3" style="animation-delay:0.3s"></circle>
+            <circle cx="500" cy="80" r="3" style="animation-delay:0.6s"></circle>
+            <circle cx="480" cy="220" r="3" style="animation-delay:0.9s"></circle>
+            <circle cx="700" cy="140" r="3" style="animation-delay:1.2s"></circle>
+            <circle cx="830" cy="60" r="3" style="animation-delay:1.5s"></circle>
+        </svg>
         <div class="hero-content">
             <h1>Progettazione, Hardening e Messa in Sicurezza di una Rete LAN</h1>
             <p class="subtitle">Dalla Teoria alla Pratica: Configurazione di apparati di rete per laboratori aziendali e scolastici</p>
@@ -443,24 +858,31 @@
     </header>
 
     <div class="layout-wrapper">
-        
+
         <aside class="sidebar">
             <h3>Indice del Progetto</h3>
-            <nav>
+            <nav id="navMenu">
                 <ul>
-                    <li><a href="#intro">Introduzione e Obiettivi</a></li>
-                    <li><a href="#cap1">1. Topologia e IP Statico</a></li>
-                    <li><a href="#cap2">2. Disattivazione Server DHCP</a></li>
-                    <li><a href="#cap3">3. Vulnerability: Il caso WPS</a></li>
-                    <li><a href="#cap4">4. Sicurezza L2: MAC Filtering</a></li>
-                    <li><a href="#cap5">5. Firewall: Policy di Default</a></li>
-                    <li><a href="#cap6">6. Host: Subnet Targeting</a></li>
-                    <li><a href="#cap7">7. Target: Dominio vs IP</a></li>
-                    <li><a href="#cap8">8. Attivazione Access Control List</a></li>
-                    <li><a href="#cap9">9. Troubleshooting e Cache DNS</a></li>
-                    <li><a href="#glossario">Glossario Tecnico</a></li>
+                    <li><a href="#intro" data-target="intro">Introduzione e Obiettivi</a></li>
+                    <li><a href="#cap1" data-target="cap1">1. Topologia e IP Statico</a></li>
+                    <li><a href="#cap2" data-target="cap2">2. Disattivazione Server DHCP</a></li>
+                    <li><a href="#cap3" data-target="cap3">3. Vulnerability: Il caso WPS</a></li>
+                    <li><a href="#cap4" data-target="cap4">4. Sicurezza L2: MAC Filtering</a></li>
+                    <li><a href="#cap5" data-target="cap5">5. Firewall: Policy di Default</a></li>
+                    <li><a href="#cap6" data-target="cap6">6. Host: Subnet Targeting</a></li>
+                    <li><a href="#cap7" data-target="cap7">7. Target: Dominio vs IP</a></li>
+                    <li><a href="#cap8" data-target="cap8">8. Attivazione Access Control List</a></li>
+                    <li><a href="#cap9" data-target="cap9">9. Troubleshooting e Cache DNS</a></li>
+                    <li><a href="#riepilogo" data-target="riepilogo">Riepilogo Configurazioni</a></li>
+                    <li><a href="#glossario" data-target="glossario">Glossario Tecnico</a></li>
                 </ul>
             </nav>
+            <div class="sidebar-progress">
+                <span id="progressLabel">0% completato</span>
+                <div class="sidebar-progress-bar">
+                    <div class="sidebar-progress-fill" id="sidebarProgressFill"></div>
+                </div>
+            </div>
         </aside>
 
         <main>
@@ -470,33 +892,89 @@
                     <h2 style="color: var(--primary); margin-bottom: 1rem; font-size: 2rem;">Introduzione al Capolavoro</h2>
                     <p>Questo progetto documenta il processo sistemistico di riconfigurazione di un apparato di rete consumer (Router TP-Link TL-WR842ND) per trasformarlo in un nodo sicuro all'interno di un'infrastruttura di laboratorio scolastico/aziendale.</p>
                     <p>L'obiettivo primario è stato passare dalla teoria studiata in classe all'applicazione pratica, implementando protocolli di sicurezza operanti su diversi strati del <strong>Modello OSI</strong> (in particolare Livello 2, Livello 3 e Livello 7) per garantire l'isolamento del traffico, la mitigazione delle vulnerabilità hardware e il filtraggio selettivo dei contenuti web.</p>
+
+                    <div class="topology-diagram">
+                        <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagramma della topologia di rete del laboratorio">
+                            <!-- Internet cloud -->
+                            <g class="topo-node">
+                                <ellipse cx="380" cy="40" rx="90" ry="32" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+                                <text x="380" y="45" text-anchor="middle" class="topo-label">🌐 Internet</text>
+                            </g>
+
+                            <!-- Link to main gateway -->
+                            <line x1="380" y1="72" x2="380" y2="110" class="topo-link"/>
+
+                            <!-- Main router/gateway -->
+                            <g class="topo-node">
+                                <rect x="320" y="110" width="120" height="48" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+                                <text x="380" y="132" text-anchor="middle" class="topo-label">Gateway Principale</text>
+                                <text x="380" y="148" text-anchor="middle" class="topo-label-small">192.168.0.1</text>
+                            </g>
+
+                            <!-- Link down to TP-Link AP -->
+                            <line x1="380" y1="158" x2="380" y2="196" class="topo-link"/>
+
+                            <!-- TP-Link AP (the configured device) -->
+                            <g class="topo-node">
+                                <rect x="300" y="196" width="160" height="56" rx="8" fill="#0f172a" stroke="#3b82f6" stroke-width="2"/>
+                                <text x="380" y="218" text-anchor="middle" class="topo-label" style="font-weight:600">📡 TP-Link TL-WR842ND</text>
+                                <text x="380" y="236" text-anchor="middle" class="topo-label-small">192.168.0.254 · DHCP OFF</text>
+                            </g>
+
+                            <!-- Links to clients -->
+                            <line x1="340" y1="252" x2="160" y2="296" class="topo-link"/>
+                            <line x1="380" y1="252" x2="380" y2="296" class="topo-link"/>
+                            <line x1="420" y1="252" x2="600" y2="296" class="topo-link"/>
+
+                            <!-- Clients -->
+                            <g class="topo-node">
+                                <rect x="105" y="280" width="110" height="36" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1"/>
+                                <text x="160" y="302" text-anchor="middle" class="topo-label-small">💻 PC Laboratorio</text>
+                            </g>
+                            <g class="topo-node">
+                                <rect x="325" y="280" width="110" height="36" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1"/>
+                                <text x="380" y="302" text-anchor="middle" class="topo-label-small">📱 Mobile (Whitelist)</text>
+                            </g>
+                            <g class="topo-node">
+                                <rect x="545" y="280" width="110" height="36" rx="6" fill="#1e293b" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4 3"/>
+                                <text x="600" y="302" text-anchor="middle" class="topo-label-small" style="fill:#fca5a5">🚫 MAC non in lista</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <p style="font-size:0.9rem; color:var(--text-muted); text-align:center; margin-top:-1rem;">Fig. 1 — Topologia logica: l'Access Point opera in cascata al gateway principale (LAN-to-LAN), con DHCP disattivato e MAC Filtering attivo sui client wireless.</p>
                 </div>
             </section>
 
             <section id="cap1" class="chapter-card">
                 <header class="chapter-header">
-                    <div class="chapter-num">1</div>
-                    <h2 class="chapter-title">Configurazione Topologica e IP Statico</h2>
+                    <div class="chapter-header-left">
+                        <div class="chapter-num">1</div>
+                        <h2 class="chapter-title">Configurazione Topologica e IP Statico</h2>
+                    </div>
+                    <span class="osi-badge l3">Livello 3 · Rete</span>
                 </header>
                 <div class="chapter-content">
                     <p>La prima fase operativa ha riguardato l'accesso all'interfaccia di amministrazione dell'apparato tramite l'IP di fabbrica (<code class="inline">192.168.0.1</code>). Per inserire il router nella rete del laboratorio senza causare collisioni con il gateway principale, ho modificato l'indirizzamento logico.</p>
-                    <p>Ho assegnato al dispositivo l'IP Statico <code class="inline">192.168.0.254</code>. Questa scelta progettuale posiziona l'apparato di gestione all'estremo superiore della Subnet Mask (<code>/24</code>), riservando i primi indirizzi ai server e il blocco centrale ai client dinamici.</p>
-                    
+                    <p>Ho assegnato al dispositivo l'IP Statico <code class="inline">192.168.0.254</code>. Questa scelta progettuale posiziona l'apparato di gestione all'estremo superiore della Subnet Mask (<code class="inline">/24</code>), riservando i primi indirizzi ai server e il blocco centrale ai client dinamici.</p>
+
                     <div class="screenshot-placeholder">
                         <span>📸</span>
-                        [Inserire qui lo screenshot della pagina Network > LAN con l'IP 192.168.0.254]
+                        [Inserire qui lo screenshot della pagina Network &gt; LAN con l'IP 192.168.0.254]
                     </div>
                 </div>
             </section>
 
             <section id="cap2" class="chapter-card">
                 <header class="chapter-header">
-                    <div class="chapter-num">2</div>
-                    <h2 class="chapter-title">Risoluzione Conflitti: Disattivazione DHCP</h2>
+                    <div class="chapter-header-left">
+                        <div class="chapter-num">2</div>
+                        <h2 class="chapter-title">Risoluzione Conflitti: Disattivazione DHCP</h2>
+                    </div>
+                    <span class="osi-badge l3">Livello 3 · Rete</span>
                 </header>
                 <div class="chapter-content">
                     <p>Spostandomi nella sezione <strong>DHCP Settings</strong> del firmware, ho modificato lo stato del servizio su <strong>Disable</strong>. Questa è un'operazione fondamentale quando si configura un Access Point secondario in cascata a un router principale (collegamento LAN-to-LAN).</p>
-                    
+
                     <div class="info-box danger">
                         <h4>Prevenzione del DHCP Spoofing e Conflitti</h4>
                         <p>Mantenere attivi due server DHCP sulla stessa topologia di rete genera una grave anomalia sistemistica. I dispositivi client riceverebbero offerte IP contrastanti (DHCPOFFER), portando a gateway errati e conseguente impossibilità di instradare i pacchetti verso Internet (Livello 3 OSI compromesso).</p>
@@ -506,12 +984,15 @@
 
             <section id="cap3" class="chapter-card">
                 <header class="chapter-header">
-                    <div class="chapter-num">3</div>
-                    <h2 class="chapter-title">Hardening Wireless e Vulnerabilità WPS</h2>
+                    <div class="chapter-header-left">
+                        <div class="chapter-num">3</div>
+                        <h2 class="chapter-title">Hardening Wireless e Vulnerabilità WPS</h2>
+                    </div>
+                    <span class="osi-badge l2">Livello 2 · Data Link</span>
                 </header>
                 <div class="chapter-content">
                     <p>La sicurezza perimetrale della WLAN inizia dall'abbattimento della superficie di attacco. Dopo aver configurato l'algoritmo di crittografia simmetrica <strong>WPA2-PSK [AES]</strong>, ho analizzato e disattivato il protocollo <strong>WPS (Wi-Fi Protected Setup)</strong>.</p>
-                    
+
                     <div class="info-box">
                         <h4>Analisi della Vulnerabilità WPS</h4>
                         <p>Il WPS utilizza un PIN di 8 cifre per l'autenticazione. Tuttavia, il router convalida il PIN dividendolo in due blocchi separati (uno da 4 cifre, uno da 3 cifre + checksum). Questo errore di design crittografico riduce le combinazioni da provare da 100.000.000 a sole 11.000.</p>
@@ -522,8 +1003,11 @@
 
             <section id="cap4" class="chapter-card">
                 <header class="chapter-header">
-                    <div class="chapter-num">4</div>
-                    <h2 class="chapter-title">Sicurezza Livello 2: MAC Filtering</h2>
+                    <div class="chapter-header-left">
+                        <div class="chapter-num">4</div>
+                        <h2 class="chapter-title">Sicurezza Livello 2: MAC Filtering</h2>
+                    </div>
+                    <span class="osi-badge l2">Livello 2 · Data Link</span>
                 </header>
                 <div class="chapter-content">
                     <p>Per implementare una rigorosa politica di controllo degli accessi fisici (Livello 2 - Data Link), ho attivato il <strong>Wireless MAC Filtering</strong>.</p>
@@ -533,13 +1017,16 @@
 
             <section id="cap5" class="chapter-card">
                 <header class="chapter-header">
-                    <div class="chapter-num">5</div>
-                    <h2 class="chapter-title">Firewall: Impostazione Policy di Default</h2>
+                    <div class="chapter-header-left">
+                        <div class="chapter-num">5</div>
+                        <h2 class="chapter-title">Firewall: Impostazione Policy di Default</h2>
+                    </div>
+                    <span class="osi-badge multi">Livello 3 / 7</span>
                 </header>
                 <div class="chapter-content">
-                    <p>La gestione avanzata del traffico in uscita è stata realizzata tramite le <strong>ACL (Access Control List)</strong>. Nella sezione <em>Access Control > Rule</em>, ho spuntato la voce <em>Enable Internet Access Control</em>.</p>
+                    <p>La gestione avanzata del traffico in uscita è stata realizzata tramite le <strong>ACL (Access Control List)</strong>. Nella sezione <em>Access Control &gt; Rule</em>, ho spuntato la voce <em>Enable Internet Access Control</em>.</p>
                     <p>Come regola fondamentale, ho impostato la <strong>Default Filter Policy</strong> su <strong>Allow</strong>. Questa impostazione determina una logica operativa di tipo <em>Blacklist</em>: il router permette il passaggio di tutto il traffico dati ordinario, intervenendo con il blocco (Drop) esclusivamente sui pacchetti che corrispondono alle regole restrittive (Deny) che andremo a definire.</p>
-                    
+
                     <div class="screenshot-placeholder">
                         <span>📸</span>
                         [Inserire qui lo screenshot della Default Filter Policy impostata su Allow]
@@ -549,8 +1036,11 @@
 
             <section id="cap6" class="chapter-card">
                 <header class="chapter-header">
-                    <div class="chapter-num">6</div>
-                    <h2 class="chapter-title">Definizione Host: Subnet Targeting</h2>
+                    <div class="chapter-header-left">
+                        <div class="chapter-num">6</div>
+                        <h2 class="chapter-title">Definizione Host: Subnet Targeting</h2>
+                    </div>
+                    <span class="osi-badge l3">Livello 3 · Rete</span>
                 </header>
                 <div class="chapter-content">
                     <p>Ogni regola ACL necessita di un "Soggetto" a cui essere applicata. Nel sottomenu <strong>Host</strong>, ho definito chi subirà il blocco.</p>
@@ -560,8 +1050,11 @@
 
             <section id="cap7" class="chapter-card">
                 <header class="chapter-header">
-                    <div class="chapter-num">7</div>
-                    <h2 class="chapter-title">Definizione Target: Domain vs IP Filtering</h2>
+                    <div class="chapter-header-left">
+                        <div class="chapter-num">7</div>
+                        <h2 class="chapter-title">Definizione Target: Domain vs IP Filtering</h2>
+                    </div>
+                    <span class="osi-badge multi">Livello 3 / 7</span>
                 </header>
                 <div class="chapter-content">
                     <p>Nel sottomenu <strong>Target</strong> ho censito le destinazioni da vietare (es. siti di scommesse o domini specifici come <em>apple.com</em>). Il router offre due modalità operative, che agiscono su livelli diversi del Modello OSI:</p>
@@ -575,13 +1068,16 @@
 
             <section id="cap8" class="chapter-card">
                 <header class="chapter-header">
-                    <div class="chapter-num">8</div>
-                    <h2 class="chapter-title">Attivazione delle Access Control List</h2>
+                    <div class="chapter-header-left">
+                        <div class="chapter-num">8</div>
+                        <h2 class="chapter-title">Attivazione delle Access Control List</h2>
+                    </div>
+                    <span class="osi-badge l3">Livello 3 · Rete</span>
                 </header>
                 <div class="chapter-content">
                     <p>Tornando nel menu principale delle regole (Rule), ho completato il processo assemblando l'ACL. Ho creato una regola denominata <code class="inline">SitiBloccati</code>, associando l'Host globale (<em>Tutta_La_Rete</em>) al Target censito (es. <em>apple</em>).</p>
                     <p>Impostando l'azione su <strong>Deny</strong> e lo stato su <strong>Enabled</strong>, il sistema di <em>Packet Filtering</em> del firewall è entrato ufficialmente in funzione, garantendo la messa in sicurezza dell'ambiente di lavoro.</p>
-                    
+
                     <div class="screenshot-placeholder">
                         <span>📸</span>
                         [Inserire qui lo screenshot della tabella Rule con la regola SitiBloccati attiva]
@@ -591,12 +1087,15 @@
 
             <section id="cap9" class="chapter-card">
                 <header class="chapter-header">
-                    <div class="chapter-num">9</div>
-                    <h2 class="chapter-title">Troubleshooting, Cache e Fine Tuning</h2>
+                    <div class="chapter-header-left">
+                        <div class="chapter-num">9</div>
+                        <h2 class="chapter-title">Troubleshooting, Cache e Fine Tuning</h2>
+                    </div>
+                    <span class="osi-badge l7">Livello 7 · Applicazione</span>
                 </header>
                 <div class="chapter-content">
                     <p>L'ultima fase del Capolavoro ha richiesto spiccate capacità di <strong>Troubleshooting</strong>. Eseguendo i test pratici di navigazione, i siti vietati risultavano inizialmente ancora accessibili. Ho identificato e risolto due problematiche tecniche:</p>
-                    
+
                     <div class="info-box success">
                         <h4>1. Il Limite del Protocollo HTTPS</h4>
                         <p>Il filtraggio per <em>Domain Name</em> falliva perché il traffico moderno è crittografato (HTTPS su porta TCP 443). Il router non essendo in grado di eseguire la <em>Deep Packet Inspection</em>, non leggeva il nome del sito nel payload. Ho risolto modificando il Target: inserendo direttamente l'<strong>Indirizzo IP pubblico</strong> del server web (Livello 3), il firewall ha scartato la connessione con successo.</p>
@@ -606,11 +1105,14 @@
 
                     <div class="terminal-window">
                         <div class="terminal-header">
-                            <div class="term-dot red"></div>
-                            <div class="term-dot yellow"></div>
-                            <div class="term-dot green"></div>
+                            <div class="terminal-header-dots">
+                                <div class="term-dot red"></div>
+                                <div class="term-dot yellow"></div>
+                                <div class="term-dot green"></div>
+                            </div>
+                            <button class="copy-btn" data-copy-target="termCode" onclick="copyTerminal(this)">Copia</button>
                         </div>
-                        <div class="terminal-body">
+                        <div class="terminal-body" id="termCode">
                             <span class="cmd">C:\Users\Elsayed></span> ipconfig /flushdns<br><br>
                             <span class="output">Configurazione IP di Windows<br>
                             Cache del resolver DNS svuotata correttamente.</span><br><br>
@@ -620,6 +1122,73 @@
                             Richiesta scaduta.</span>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <section id="riepilogo" class="chapter-card">
+                <h2 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 2rem;">Riepilogo delle Configurazioni</h2>
+                <p style="color:var(--text-muted); margin-bottom: 1.5rem;">Quadro sintetico di tutti i parametri di sicurezza implementati sull'apparato.</p>
+                <div class="summary-table-wrapper">
+                    <table class="summary-table">
+                        <thead>
+                            <tr>
+                                <th>Parametro</th>
+                                <th>Valore configurato</th>
+                                <th>Livello OSI</th>
+                                <th>Stato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>IP statico del dispositivo</td>
+                                <td><code class="inline">192.168.0.254</code></td>
+                                <td>3 · Rete</td>
+                                <td><span class="status-pill active">Attivo</span></td>
+                            </tr>
+                            <tr>
+                                <td>Server DHCP locale</td>
+                                <td>Disable</td>
+                                <td>3 · Rete</td>
+                                <td><span class="status-pill disabled">Disattivato</span></td>
+                            </tr>
+                            <tr>
+                                <td>Crittografia wireless</td>
+                                <td>WPA2-PSK [AES]</td>
+                                <td>2 · Data Link</td>
+                                <td><span class="status-pill active">Attivo</span></td>
+                            </tr>
+                            <tr>
+                                <td>WPS (Wi-Fi Protected Setup)</td>
+                                <td>Disable</td>
+                                <td>2 · Data Link</td>
+                                <td><span class="status-pill disabled">Disattivato</span></td>
+                            </tr>
+                            <tr>
+                                <td>MAC Address Filtering</td>
+                                <td>Allow (White List)</td>
+                                <td>2 · Data Link</td>
+                                <td><span class="status-pill active">Attivo</span></td>
+                            </tr>
+                            <tr>
+                                <td>Default Filter Policy</td>
+                                <td>Allow</td>
+                                <td>3 / 7</td>
+                                <td><span class="status-pill active">Attivo</span></td>
+                            </tr>
+                            <tr>
+                                <td>Host group "Tutta_La_Rete"</td>
+                                <td>192.168.0.2 – 192.168.0.254</td>
+                                <td>3 · Rete</td>
+                                <td><span class="status-pill active">Attivo</span></td>
+                            </tr>
+                            <tr>
+                                <td>Regola ACL "SitiBloccati"</td>
+                                <td>Deny · Target IP pubblico</td>
+                                <td>3 · Rete</td>
+                                <td><span class="status-pill active">Attivo</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -642,16 +1211,121 @@
                         <dt>ACL</dt>
                         <dd>Access Control List. Insieme di regole (Permit o Deny) applicate a un'interfaccia router per filtrare il traffico in transito.</dd>
                     </div>
+                    <div class="glossary-term">
+                        <dt>WPS</dt>
+                        <dd>Wi-Fi Protected Setup. Protocollo di associazione rapida tramite PIN, noto per una vulnerabilità di design che ne riduce drasticamente la sicurezza.</dd>
+                    </div>
+                    <div class="glossary-term">
+                        <dt>Deep Packet Inspection</dt>
+                        <dd>Tecnica di analisi del payload dei pacchetti di rete, necessaria per leggere contenuti applicativi anche quando il traffico è cifrato in HTTPS.</dd>
+                    </div>
                 </dl>
             </section>
 
         </main>
     </div>
 
+    <button class="back-to-top" id="backToTop" aria-label="Torna in cima alla pagina">↑</button>
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambia tema chiaro/scuro">🌙</button>
+
     <footer>
         <p><strong>Capolavoro Maturità</strong> - Sistemi e Reti</p>
         <p>Lavoro progettato, testato e documentato in autonomia. Anno Scolastico 2025/2026.</p>
     </footer>
 
+    <script>
+        // ===== Progress bar di lettura =====
+        const progressBar = document.getElementById('progressBar');
+        const sidebarProgressFill = document.getElementById('sidebarProgressFill');
+        const progressLabel = document.getElementById('progressLabel');
+        const backToTop = document.getElementById('backToTop');
+
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+            progressBar.style.width = pct + '%';
+            sidebarProgressFill.style.width = pct + '%';
+            progressLabel.textContent = Math.round(pct) + '% completato';
+            backToTop.classList.toggle('show', scrollTop > 600);
+        }
+        window.addEventListener('scroll', updateProgress, { passive: true });
+        updateProgress();
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===== Tema chiaro/scuro =====
+        const themeToggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                root.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+            } else {
+                root.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙';
+            }
+        }
+
+        let currentTheme = 'light';
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            currentTheme = 'dark';
+        }
+        setTheme(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(currentTheme);
+        });
+
+        // ===== Scrollspy: evidenzia voce attiva nella sidebar =====
+        const sections = document.querySelectorAll('main section, #intro');
+        const navLinks = document.querySelectorAll('#navMenu a');
+
+        const spyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const id = entry.target.id;
+                const link = document.querySelector(`#navMenu a[data-target="${id}"]`);
+                if (!link) return;
+                if (entry.isIntersecting) {
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+
+        sections.forEach(sec => spyObserver.observe(sec));
+
+        // ===== Reveal animato dei capitoli on-scroll =====
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.chapter-card').forEach(card => revealObserver.observe(card));
+
+        // ===== Copia comando da terminale =====
+        function copyTerminal(btn) {
+            const targetId = btn.getAttribute('data-copy-target');
+            const el = document.getElementById(targetId);
+            const text = el.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const original = btn.textContent;
+                btn.textContent = 'Copiato ✓';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.classList.remove('copied');
+                }, 1800);
+            });
+        }
+    </script>
 </body>
 </html>
